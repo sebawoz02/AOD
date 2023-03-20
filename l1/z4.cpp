@@ -122,7 +122,6 @@ int main(){
     clock_t end = clock();
     cout << (end - start)/(double)CLOCKS_PER_SEC << "s"<< endl;
     // Wczytano dane
-
     Graph graph(V, edges, directed);
 
     graph.isBipartite();
