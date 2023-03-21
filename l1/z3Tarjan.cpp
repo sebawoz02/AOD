@@ -95,7 +95,7 @@ int main(){
     string line;
     string space_delimiter = " ";
 
-    ifstream file("E:/STUDIA/AOD/list1/project1/aod_testy1/3/g3-5.txt");
+    ifstream file("/home/AOD/g3-5.txt");
 
     int i = 1;
     int V;
