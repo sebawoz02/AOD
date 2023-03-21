@@ -1,7 +1,7 @@
+
 #include <iostream>
 #include <bits/stdc++.h>
 #include <list>
-#include <fstream>
 #include <vector>
 #include <string>
 #include <cstring>
@@ -47,7 +47,7 @@ public:
     }
 
     // funkcja szukajaca cyklu sposobem DFS w roznych drzewach az wszystkie wiercholki zostana odwiedzone
-    bool scanForCycle(int vINd[]){
+    bool isCyclic(int vINd[]){
         bool *visited = new bool[numOfVertices]; // odwiedzone wiercholki
         bool *stack = new bool[numOfVertices];
         for(int i = 0; i < numOfVertices; i++){
@@ -60,39 +60,35 @@ public:
         return false;
     }
 
-    void topologicalSorting(){
+    list<int> topologicalSorting(){
+
         int* vINd = new int[numOfVertices]; // tablica stopni wchodzących
-        list<int> vertices; // lista z wiercholkami
-        list<int>::iterator checked, toDelete;
-        bool test;  // zmienna do testowania usuniec wierchołków
+        list<int>::iterator j;
+        list<int> noIncomingEdges;  // lista zawiera wierzcholki o stopniu 0
+        list<int> ordering; //lista z posortowanymi elementami
+
         for(int i = 0; i<numOfVertices;i++){
             vINd[i] = 0;
-            vertices.push_back(i);
         }
-        if(scanForCycle(vINd)){
+        if(isCyclic(vINd)){
             cout << "Graf zawiera skierowany cykl"<<endl;
+            return ordering;
         } else{
             cout << "Graf nie zawiera skierowanego cyklu" << endl;
-            do{
-                test = false;
-                checked = vertices.begin();
-                while(checked!=vertices.end()){
-                    if(vINd[*checked]>0){
-                        checked++;
-                        continue;
-                    }
-                    // usuwanie wierzcholka o stopniu wchodzacym 0
-                    test = true;
-                    list<int>::iterator neighbours;
-                    for(neighbours = verticesList[*checked].begin(); neighbours != verticesList[*checked].end();neighbours++){
-                        vINd[*neighbours]--;    // zmniejszenie stopnia kazdego sasiada usuwanego wiercholka
-                    }
-                    if(numOfVertices<= 200) cout << *checked + 1 << ", ";
-                    toDelete = checked;
-                    checked++;
-                    vertices.remove(*toDelete);
+            for(int i = 0; i < numOfVertices;i++){
+                if(vINd[i] == 0) noIncomingEdges.push_back(i);
+            }
+
+            while(!noIncomingEdges.empty()){
+                int vertex = noIncomingEdges.front();
+                ordering.push_back(vertex + 1);
+                noIncomingEdges.pop_front();
+                for(j = verticesList[vertex].begin(); j!= verticesList[vertex].end(); j++){
+                    vINd[*j]--;
+                    if (vINd[*j] == 0) noIncomingEdges.push_back(*j);
                 }
-            } while(test);
+            }
+            return ordering;
         }
     }
 
@@ -105,7 +101,7 @@ int main(){
     string line;
     string space_delimiter = " ";
 
-    ifstream file("E:/STUDIA/AOD/list1/project1/aod_testy1/2/g2a-2.txt");
+    ifstream file("------");
 
     int i = 1;
     bool directed;
@@ -147,6 +143,17 @@ int main(){
 
     Graph graph(V, edges, directed);
 
-    graph.topologicalSorting();
+    start = clock();
+    list<int> ordering = graph.topologicalSorting();
+    end = clock();
+    cout<< endl << "Czas:" << (end - start)/(double)CLOCKS_PER_SEC << "s"<< endl;
+
+    if(V <= 200){
+        for(list<int>::iterator i = ordering.begin(); i!=ordering.end();i++){
+            cout << *i << ", ";
+        }
+    }
+
+    return 0;
 
 }
