@@ -13,27 +13,40 @@ struct graphEdge{
 
 class Graph{
 private:
-    void DFS(bool visited[], int startVertex, bool print, list<int> *stack){
-        visited[startVertex] = true;
-        if(print) cout << startVertex + 1 << ", ";
-        list<int> adj = verticesList[startVertex];
-        list<int>::iterator i;
-        for(i = adj.begin(); i!=adj.end(); i++){
-            if(!visited[*i]) DFS(visited, *i, print, stack);
-        }
-        if(!print) stack->push_front(startVertex);
-    }
-
-    Graph getTranspose(){
-        Graph transpose(this->numOfVertices);
-        for(int v = 0; v<numOfVertices; v++){
-            list<int>::iterator i;
-            for(i = verticesList[v].begin(); i!=verticesList[v].end(); i++){
-                graphEdge edge = {*i+1, v+1};
-                transpose.addEgde(edge);
+    void SCCUt(int u, int disc[], int low[], stack<int>* stack, bool isOnStack[]){
+        static int time = 0;
+        disc[u] = low[u] = time++;
+        stack->push(u);
+        isOnStack[u] = true;
+        for(auto i = verticesList[u].begin(); i != verticesList[u].end(); i++){
+            int v = *i;
+            if(disc[v] == -1){
+                SCCUt(v, disc, low, stack, isOnStack);
+                low[u] = min(low[u], low[v]);
+            }
+            else if(isOnStack[v]){
+                low[u] = min(low[u], disc[v]);
             }
         }
-        return transpose;
+
+        int popped;
+        int numOfComponents = 0;
+        if(low[u] == disc[u]){
+            while(stack->top() != u){
+                numOfComponents++;
+                popped = stack->top();
+                if(numOfVertices<=200) cout << popped + 1 << " ";
+                isOnStack[popped] = false;
+                stack->pop();
+            }
+            popped = stack->top();
+            numOfComponents++;
+            if(numOfVertices<=200) cout << popped + 1 << " ";
+            isOnStack[popped] = false;
+            stack->pop();
+            cout << "#" << numOfComponents << endl;
+        }
+
     }
 
 public:
@@ -49,37 +62,23 @@ public:
         }
     }
 
-    explicit Graph(int V){
-        this->numOfVertices = V;
-    }
-
     void addEgde(graphEdge edge){
         verticesList[edge.startV-1].push_back(edge.endV-1);
     }
 
-    void findSSC(){
-        cout << "SSC:" <<endl;
-        list<int> stack;
-        bool* visited = new bool[numOfVertices];
-        for(int i = 0; i< numOfVertices; i++) visited[i] = false;
-
-        // step 1: fill order
-        for(int i = 0; i< numOfVertices; i++){
-            if(!visited[i]) DFS(visited, i, false, &stack);
+    void findSCC(){
+        int* disc = new int[numOfVertices];
+        int* low = new int[numOfVertices];
+        bool* isOnStack = new bool[numOfVertices];
+        stack<int> stack;
+        for(int i = 0; i < numOfVertices; i++){
+            disc[i] = -1;
+            low[i] = -1;
+            isOnStack[i] = false;
         }
-
-        // step 2: get transpose graph
-        Graph tr = getTranspose();
-        for(int i = 0; i< numOfVertices; i++) visited[i] = false;
-
-        // step 3: process vertices on stack
-        while(!stack.empty()){
-            int v = stack.front();
-            stack.pop_front();
-            // print ssc
-            if(!visited[v]){
-                tr.DFS(visited, v, true, &stack);
-                cout << "/"<< endl;
+        for(int i = 0; i< numOfVertices; i++){
+            if(disc[i] == -1){
+                SCCUt(i, disc, low, &stack, isOnStack);
             }
         }
 
@@ -96,30 +95,21 @@ int main(){
     string line;
     string space_delimiter = " ";
 
-    ifstream file("E:/STUDIA/AOD/list1/project1/aod_testy1/3/g3-2.txt");
+    ifstream file("E:/STUDIA/AOD/list1/project1/aod_testy1/3/g3-5.txt");
 
     int i = 1;
-    bool directed;
-    int V, E;
+    int V;
 
     list<graphEdge> edges;
 
     while(getline(file, line)){
         vector<string> values{};
 
-        if(i==1){
-            char* dir = new char[1];
-            strcpy(dir, line.c_str());
-            if(dir[0] == 'D') directed = true;
-            else directed = false;
-        } else if(i==2){
+        if(i==2){
             V = stoi(line);
         }
-        else if(i==3){
-            E = stoi(line);
-        }
-        else{
-            size_t pos = 0;
+        else if(i!=1 && i!=3){
+            size_t pos;
             while ((pos = line.find(space_delimiter)) != string::npos){
                 values.push_back(line.substr(0, pos));
                 line.erase(0, pos + space_delimiter.length());
@@ -137,6 +127,6 @@ int main(){
     // Wczytano dane
 
     Graph graph(V, edges);
-    graph.findSSC();
-
+    graph.findSCC();
+    return 0;
 }
