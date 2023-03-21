@@ -11,12 +11,43 @@ using namespace std;
 class Graph{
 private:
     // step 1 dfs
-    void DFS(bool* visited, int startVertex, list<int> *stack){
-        visited[startVertex] = true;
-        for(int & i : verticesList[startVertex]){
-            if(!visited[i]) DFS(visited, i, stack);
+    void fillOrder(bool* visited, int startVertex, list<int> *stk) const{
+        stack<int> dfsStack;
+        list<int> order;
+        dfsStack.push(startVertex);
+        order.push_front(startVertex);
+        while(!dfsStack.empty()){
+            int s = dfsStack.top();
+            dfsStack.pop();
+            order.push_front(s);
+            if(!visited[s]) visited[s] = true;
+            int found = 0;
+            for(int & i : verticesList[s]){
+                if(!visited[i]){
+                    found++;
+                    dfsStack.push(i);
+                }
+            }
+            if(found == 0){
+                stk->push_front(s);
+                order.pop_front();
+                while(!order.empty()){
+                    int prev = order.front();
+                    found = 0;
+                    for(int & i : verticesList[prev]) {
+                        if(!visited[i]) {
+                            found++;
+                            break;
+                        }
+                    }
+                    if(found == 0){
+                        stk->push_front(prev);
+                        order.pop_front();
+                    }
+                    else break;
+                }
+            }
         }
-        stack->push_front(startVertex);
     }
 
     // step 2
@@ -31,12 +62,25 @@ private:
     }
 
     // step 3 dfs
-    void dfsT(int vertex, bool* visited){
-        visited[vertex] = true;
-        if(numOfVertices<=200) cout << vertex + 1 << ", ";
-        for(int & i : verticesList[vertex]){
-            if(!visited[i]) dfsT(i, visited);
+    void dfsT(int vertex, bool* visited) const{
+        int numOfComponents = 0;
+        stack<int> dfsStack;
+        dfsStack.push(vertex);
+        while(!dfsStack.empty()){
+            int s = dfsStack.top();
+            dfsStack.pop();
+            if(!visited[s]){
+                if(numOfVertices<=200) cout << s+1 << " ";
+                visited[s] = true;
+                numOfComponents++;
+            }
+            for(int & i : verticesList[s]){
+                if(!visited[i]){
+                    dfsStack.push(i);
+                }
+            }
         }
+        cout << endl << "# of components: "<< numOfComponents << endl;
     }
 
 
@@ -55,14 +99,15 @@ public:
         verticesList[v-1].push_back(u-1);
     }
 
-    void findSSC(){
-        cout << "SSC:" <<endl;
+    void findSCC(){
+        cout << "SCC:" <<endl;
         list<int> stack;
+        int sccFound = 0;
         bool* visited = new bool[numOfVertices];
         for(int i = 0; i< numOfVertices; i++) visited[i] = false;
 
         // step 1: fill order
-        for(int i = 0; i< numOfVertices; i++) if(!visited[i]) DFS(visited, i, &stack);
+        for(int i = 0; i< numOfVertices; i++) if(!visited[i]) fillOrder(visited, i, &stack);
 
         // step 2: get transpose graph
         Graph* tr = getTranspose();
@@ -75,9 +120,10 @@ public:
             // print ssc
             if(!visited[v]){
                 tr->dfsT(v, visited);
-                cout << "/"<< endl;
+                sccFound++;
             }
         }
+        cout << "SSC found: "<< sccFound;
 
     }
 
@@ -91,7 +137,7 @@ int main(){
     string line;
     string space_delimiter = " ";
 
-    ifstream file("E:/STUDIA/AOD/list1/project1/aod_testy1/3/g3-4.txt");
+    ifstream file("E:/STUDIA/AOD/list1/project1/aod_testy1/3/g3-6.txt");
 
     int i = 1;
     int V;
@@ -121,5 +167,7 @@ int main(){
     cout << (end - start)/(double)CLOCKS_PER_SEC << "s"<< endl;
     // Wczytano dane
 
-    graph->findSSC();
+    start = clock();
+    graph->findSCC();
+    cout <<endl << "Czas szukania SCC:"<< (clock()- start)/(double)CLOCKS_PER_SEC << "s"<< endl;
 }
