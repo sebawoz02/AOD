@@ -11,6 +11,11 @@ param max_dostawa{FIRMY};
 var kupione{FIRMY, LOTNISKA}, >=0, integer;
 /* Liczba galonów dostarczona z firm 1..m do lotnisk 1..n */
 
+# Objective function
+
+minimize cost: sum{f in FIRMY}( sum{ l in LOTNISKA } (kupione[f,l]*CENY[l,f]));
+/* Koszt zakupu galonów paliwa na wszystkie lotniska. */
+
 # Constraints
 
 s.t. WyslaneNaLotnisko{l in LOTNISKA}: sum{f in FIRMY}(kupione[f, l]) = zapotrzebowanie[l];
@@ -18,12 +23,7 @@ s.t. WyslaneNaLotnisko{l in LOTNISKA}: sum{f in FIRMY}(kupione[f, l]) = zapotrze
 s.t. WyslaneZFirmy{f in FIRMY}: sum{l in LOTNISKA}(kupione[f, l]) <= max_dostawa[f];
 /* Maksymalne liczby galonów paliwa które mogą sprzedać firmy. */
 
-# Objective function
-
-minimize cost: sum{f in FIRMY}( sum{ l in LOTNISKA } (kupione[f,l]*CENY[l,f]));
-/* Koszt zakupu galonów paliwa na wszystkie lotniska. */
-
+                                                                                  
 solve;
-
 display cost;
 display {f in FIRMY}(sum{l in LOTNISKA}(kupione[f,l]));
