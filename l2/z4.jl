@@ -1,5 +1,5 @@
 using JuMP
-using HiGHS
+using GLPK
 
 # składowane kontenery
 teren = [
@@ -15,7 +15,7 @@ k = 2
 N = size(teren)[1]
 M = size(teren)[2]
 
-model = Model(HiGHS.Optimizer)
+model = Model(GLPK.Optimizer)
 
 # VARIABLES
 @variable(model, kamery[1:N, 1:M], Bin)		# macierz kamery informuje czy w danej pozycji znajduje się kamera (1) lub nie (0)
