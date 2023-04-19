@@ -12,3 +12,5 @@ Algorytmy na grafach.
 # 2
 Modele programowania liniowego oraz całkowitoliczbowego w języku GNU MathProg.
 - Minizmalizacji kosztu dostawy galonów paliwa od różnych firm na lotniska.
+- Minimalizacja użytych radiowozów w ciągu doby.
+- Maksymalizacja zysku z produkcji wyrobów w fabryce.
