@@ -16,3 +16,9 @@ Modele programowania liniowego oraz całkowitoliczbowego w języku GNU MathProg 
 - Minimalizacja użytych radiowozów w ciągu doby.
 - Minimalizacja liczby kamer użytych do monitorowania kontenerów.
 - Maksymalizacja zysku z produkcji wyrobów w fabryce.
+
+# 3
+Warianty algorytmów Dijkstry. Problem najkrótszej ścieżki dla grafu o n wierzchołkach i m łukach.
+- wariant podstawowy z kopcem
+- algorytm Diala O(m + nC)
+- Radix Heap O(m + nlognC)
