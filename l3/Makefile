@@ -6,5 +6,8 @@ dijkstra: dijkstra.cpp Graph_Representation.cpp data_loader.cpp
 dial: dial.cpp Graph_Representation.cpp data_loader.cpp
 	g++ $(CFLAGS) dial.cpp Graph_Representation.cpp data_loader.cpp -o dial
 
+radix: radix_heap.cpp Graph_Representation.cpp data_loader.cpp
+	g++ $(CFLAGS) radix_heap.cpp Graph_Representation.cpp data_loader.cpp -o radix
+
 clean:
-	@rm dijkstra dial
+	@rm dijkstra dial radix

@@ -5,12 +5,6 @@
 #include "Graph_Representation.h"
 #include "data_loader.h"
 
-struct buckets {
-    std::list<int> b_list;
-    int range_a;
-    int range_b;
-};
-
 
 std::vector<int> dial(Graph *graph, int source){
     std::vector<std::pair<int, std::list<int>::iterator>> dist(graph->no_verticies);
