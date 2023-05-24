@@ -22,6 +22,9 @@ Graph* create_graph_from_path(char* path){
             int dest = atoi(p);
             p = strtok(NULL, " ");
             int weight = atoi(p);
+            if(weight > g->max_weight){
+                g->max_weight = weight;
+            }
             g->addEdge(src-1, dest-1, weight);
         }
         else if(strcmp(p, "p") == 0){

@@ -5,7 +5,8 @@
 Graph::Graph(size_t no_verticies)
 {
     this->no_verticies = no_verticies;
-    adj = new std::list<iPair>[no_verticies];
+    this->adj = new std::list<iPair>[no_verticies];
+    this->max_weight = 0;
 
 }
 void Graph::addEdge(int src, int dest, int w)
