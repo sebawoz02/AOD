@@ -12,7 +12,7 @@ std::vector<int> dial(Graph *graph, int source){
         dist[i].first = std::numeric_limits<int>::max();
     }
     dist[source].first = 0;
-    std::vector<std::list<int>> buckets(graph->max_weight + 1);
+    std::vector<std::list<int>> buckets(graph->max_weight*3);
     buckets[0].push_back(source);
     long unsigned long idx = 0;
     while(1) {
@@ -38,7 +38,7 @@ std::vector<int> dial(Graph *graph, int source){
                 dist[v].first = du + weight;
                 dv = dist[v].first;
                 if(dv > buckets.size()){
-                    buckets.resize(dv+1);
+                    buckets.resize(dv+graph->max_weight*2);
                 }
                 buckets[dv].push_front(v);
                 dist[v].second = buckets[dv].begin();
