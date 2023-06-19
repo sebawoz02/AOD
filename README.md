@@ -22,3 +22,6 @@ Warianty algorytmów Dijkstry. Problem najkrótszej ścieżki dla grafu o n wier
 - wariant podstawowy z kopcem
 - algorytm Diala O(m + nC)
 - Radix Heap O(m + nlognC)
+
+# 4
+- algorytm generujący hiperkostkę o wymiarach od 1 do 16 oraz algorytm Edmonda-Karpa
