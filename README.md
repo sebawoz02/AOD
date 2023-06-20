@@ -25,3 +25,4 @@ Warianty algorytmów Dijkstry. Problem najkrótszej ścieżki dla grafu o n wier
 
 # 4
 - algorytm generujący hiperkostkę o wymiarach od 1 do 16 oraz algorytm Edmonda-Karpa
+- algorytm Hopcrofa-Karpa do obliczenia maksymalnego skojarzenia oraz generator grafu dwudzielnego
