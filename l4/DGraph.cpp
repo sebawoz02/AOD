@@ -3,6 +3,8 @@
 #include "DGraph.h"
 
 DGraph::DGraph(size_t k, size_t i) {
+    regenerate:
+
     random_device rd;
     mt19937 gen(rd());
 
@@ -18,19 +20,22 @@ DGraph::DGraph(size_t k, size_t i) {
 
     for(uint64_t vertex = no_v >> 1; vertex < no_v; vertex++)
     {
-        bool added[no_v >> 1];
         size_t no_ad = 0;
-        for(size_t j = 0; j < no_v >> 1; j++)
-            added[j] = false;
+        vector<uint64_t> copy(ed.size());
+        for(uint64_t ii : ed)
+            copy.push_back(ii);
 
         while (no_ad != i)
         {
-            uniform_int_distribution<int> dist(0, (int)ed.size() - 1);
-            uint64_t v_idx;
-            do{
-                v_idx = ed[dist(gen)];
-            } while (added[v_idx] || this->adjList[v_idx].second == i);
-            added[v_idx] = true;
+            if(copy.empty()) {
+                delete[] this->adjList;
+                goto regenerate;
+            }
+            uniform_int_distribution<int> dist(0, (int)copy.size() - 1);
+
+            int idx = dist(gen);
+            uint64_t v_idx = copy[idx];
+            copy.erase(copy.begin() + idx);
 
             ++this->adjList[v_idx].second;
             if(this->adjList[v_idx].second == i)
